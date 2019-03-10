@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
-import Word from './components/Word/Word';
+import Line from './components/Line/Line';
+
+const wordsProps = [
+  {value: 'In'},
+  {value: 'the'},
+  {value: 'beginning'},
+  {value: 'was'},
+  {value: 'the'},
+  {value: 'Word'}
+];
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <div id="word-container">
-            <Word value={'Hello, Word!'} />
-          </div>
-        </header>
+        <Line words={wordsProps} />
       </div>
     );
   }
