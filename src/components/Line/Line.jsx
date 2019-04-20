@@ -14,7 +14,7 @@ const Line = (props) => {
   };
 
   return(
-    <div>
+    <div className='line'>
       {props.words && lineate(props.words)}
     </div>
   );

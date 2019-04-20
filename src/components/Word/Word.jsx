@@ -1,7 +1,9 @@
 import React from 'react';
 
+import './Word.css';
+
 const Word = props => {
-  return <div>{props && props.word}</div>;
+  return <div className='word'>{props && props.word}</div>;
 };
 
 export default Word;

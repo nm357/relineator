@@ -1,6 +1,4 @@
 import React from 'react';
-
-import Word from '../Word/Word';
 import Line from '../Line/Line';
 
 class Document extends React.Component {
@@ -26,7 +24,9 @@ class Document extends React.Component {
       const sliceStartIndex = lineNumber === 0 ? 0 : lineNumber * wordsPerLine;
       const sliceEndIndex = sliceStartIndex + wordsPerLine;
 
-      lines.push(words.slice(sliceStartIndex, sliceEndIndex));
+      const lineWords = words.slice(sliceStartIndex, sliceEndIndex);
+      
+      lines.push(<Line words={lineWords} />);
     }
     return lines;
   }
@@ -40,12 +40,14 @@ class Document extends React.Component {
 
   render() {
     console.log('hello from Document');
-    const documentRaw = `In the beginning was the Word, 
-      and the Word was with God, and the Word was God. 
-      He was in the beginning with God. All things came into being through him, 
-      and without him not one thing came into being. 
-      What has come into being in him was life, and the life was the light of all people. 
-      The light shines in the darkness, and the darkness did not overcome it.`
+    const documentRaw = `In the beginning was the Word, and the Word was with God, 
+      and the Word was God. He was in the beginning with God. All things came into being through him, 
+      and without him not one thing came into being. What has come into being in him was life, 
+      and the life was the light of all people. The light shines in the darkness, 
+      and the darkness did not overcome it. 
+      There was a man sent from God, whose name was John. He came as a witness to testify to the light, 
+      so that all might believe through him. He himself was not the light, 
+      but he came to testify to the light. The true light, which enlightens everyone, was coming into the world.`
 
     const lineComponents = this.lineateDocument(documentRaw, { wordsPerLine: 5 });
 
@@ -53,9 +55,9 @@ class Document extends React.Component {
 
 
     return(
-      <div>
+      <section>
         { lineComponents }
-      </div>
+      </section>
     );
   }
 }
