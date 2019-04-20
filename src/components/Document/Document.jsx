@@ -16,51 +16,24 @@ class Document extends React.Component {
     return splitOnSpace.filter(word => word.length > 0);
   }
 
-  getWordComponents(words) {
-    const wordComponents = [];
-
-    for (const word of words) {
-      wordComponents.push(<Word value={word} />);
-    }
-
-    return wordComponents
-  }
-
-  getLineComponents(wordComponents, options) {
+  buildLines(words, options) {
     const { wordsPerLine } = options;
-    const totalLength = wordComponents.length;
-    // TODO move fail-check to earliest opportunity
-    const linesCanBeWritten = true;
+    const lines = [];
+    const numberOfLines = Math.ceil(words.length / wordsPerLine);
+    console.log(`Preparing ${numberOfLines} lines.`);
 
-    if (!linesCanBeWritten) {
-      return null 
-    } else {
-      const lineComponents = [];
-      let line = [];
-      let key = 0;
-      for (const wordComponent of wordComponents) {
-        if (line.length <= wordsPerLine) {
-          if (line.length === wordsPerLine) {
-            console.log('finished line', line);
-            lineComponents.push(<Line words={line} key={key} />);
-            line = [];
-            key++;
-          } else {
-            line.push(wordComponent);
-          }
-        } else {
-          line = [];
-        }
-      }
-      console.log('lineComponents', lineComponents);
-      return lineComponents;
+    for (let lineNumber = 0; lineNumber < numberOfLines; lineNumber++) {
+      const sliceStartIndex = lineNumber === 0 ? 0 : lineNumber * wordsPerLine;
+      const sliceEndIndex = sliceStartIndex + wordsPerLine;
+
+      lines.push(words.slice(sliceStartIndex, sliceEndIndex));
     }
+    return lines;
   }
 
   lineateDocument(documentRaw, options) {
     const words = this.getWords(documentRaw);
-    const wordComponents = this.getWordComponents(words);
-    const lineComponents = this.getLineComponents(wordComponents, options);
+    const lineComponents = this.buildLines(words, options);
 
     return lineComponents;
   }
@@ -76,7 +49,7 @@ class Document extends React.Component {
 
     const lineComponents = this.lineateDocument(documentRaw, { wordsPerLine: 5 });
 
-    console.log('lineCOmponents', lineComponents);
+    console.log('lines', lineComponents);
 
 
     return(

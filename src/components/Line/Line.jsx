@@ -5,13 +5,9 @@ import './Line.css';
 
 const Line = (props) => {
   const lineate = (words) => {
-    let line = [];
-    let keyNum = 0;
-
+    const line = [];
     for (let word of words) {
-      line.push(<Word value={word.value} key={keyNum}/>);
-
-      keyNum++;
+      line.push(<Word word={word} />);
     }
 
     return line;
