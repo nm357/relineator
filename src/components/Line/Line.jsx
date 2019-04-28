@@ -7,6 +7,7 @@ const Line = (props) => {
   const lineate = (words) => {
     const line = [];
     for (let word of words) {
+      // TODO const key = some UUID;
       line.push(<Word word={word} />);
     }
 

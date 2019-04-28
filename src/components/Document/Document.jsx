@@ -39,7 +39,7 @@ class Document extends React.Component {
 
       const lineWords = words.slice(sliceStartIndex, sliceEndIndex);
       
-      lines.push(<Line words={lineWords} />);
+      lines.push(<Line words={lineWords} key={lineNumber} />);
     }
     return lines;
   }
