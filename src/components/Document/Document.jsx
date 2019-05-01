@@ -1,6 +1,6 @@
 import React from 'react';
 import Line from '../Line/Line';
-import { InputField, INPUT_FIELD_TYPES } from '../InputField/InputField';
+import InputField from '../InputField/InputField';
 
 import './Document.css';
 
