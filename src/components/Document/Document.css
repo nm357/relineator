@@ -1,0 +1,13 @@
+section {
+  border: 1px solid black;
+  margin: 1vh 1vw;
+}
+
+section > * {
+  margin: 1vh 1vw;
+}
+
+.inputs .text {
+  width: 50%;
+  height: 10vh;
+}

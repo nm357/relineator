@@ -1,16 +1,23 @@
 import React from 'react';
 import Line from '../Line/Line';
+import InputField from '../InputField/InputField';
+
+import './Document.css';
 
 class Document extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       text: '',
-      lines: null
+      lines: null,
+      wordsPerLine: null,
+      lineLimit: null,
+      lineRules: null // [ {lineNumber: #, wordsPerLine: #} ]
     };
 
     this.ingestText = this.ingestText.bind(this);
     this.lineateDocument = this.lineateDocument.bind(this);
+    this.updateRule = this.updateRule.bind(this);
   }
 
   ingestText(event) {
@@ -21,24 +28,33 @@ class Document extends React.Component {
     this.setState({text});
   }
 
+  updateRule(event) {
+    event.preventDefault();
+    const ruleName = event.target.id;
+    const ruleValue =  event.target.value;
+    console.log(':. updating rule', ruleName);
+    const rule = {[ruleName]: ruleValue};
+    this.setState(rule);
+  }
+
 
   getWords(documentRaw) {
     const splitOnSpace = documentRaw.split(/\s/g);
     return splitOnSpace.filter(word => word.length > 0);
   }
 
-  buildLines(words, options) {
-    const { wordsPerLine } = options;
+  buildLines(words) {
+    const wordsPerLine = parseInt(this.state.wordsPerLine);
     const lines = [];
     const numberOfLines = Math.ceil(words.length / wordsPerLine);
-    console.log(`Preparing ${numberOfLines} lines.`);
+    console.log(`:. preparing ${numberOfLines} lines.`);
 
     for (let lineNumber = 0; lineNumber < numberOfLines; lineNumber++) {
+      console.log(`:. line ${lineNumber}`);
       const sliceStartIndex = lineNumber === 0 ? 0 : lineNumber * wordsPerLine;
       const sliceEndIndex = sliceStartIndex + wordsPerLine;
 
       const lineWords = words.slice(sliceStartIndex, sliceEndIndex);
-      
       lines.push(<Line words={lineWords} key={lineNumber} />);
     }
     return lines;
@@ -46,9 +62,8 @@ class Document extends React.Component {
 
   lineateDocument(event) {
     event.preventDefault();
-    console.log(':. lineateDocument event', event);
     const words = this.getWords(this.state.text);
-    const lines = this.buildLines(words, { wordsPerLine: 7 }); // TODO add options input
+    const lines = this.buildLines(words);
 
     this.setState({lines});
   }
@@ -57,11 +72,17 @@ class Document extends React.Component {
     console.log(':. rendering document with lines', this.state.lines);
     return(
       <div>
-        <section>
-          <textarea value={this.state.text} onChange={this.ingestText} />
+        <section className='inputs'>
+          <textarea className='text' value={this.state.text} onChange={this.ingestText} />
           <button onClick={this.lineateDocument}>Lineate</button>
+          <InputField 
+            id={'wordsPerLine'}
+            type={'number'}
+            value={this.state.wordsPerLine}
+            handleChange={this.updateRule}
+          />
         </section>
-        <section>
+        <section className='display'>
           { this.state.lines }
         </section>
       </div>
