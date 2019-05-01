@@ -1,5 +1,6 @@
 import React from 'react';
 import Line from '../Line/Line';
+import { InputField, INPUT_FIELD_TYPES } from '../InputField/InputField';
 
 import './Document.css';
 
@@ -74,7 +75,12 @@ class Document extends React.Component {
         <section className='inputs'>
           <textarea className='text' value={this.state.text} onChange={this.ingestText} />
           <button onClick={this.lineateDocument}>Lineate</button>
-          <input type='number' id='wordsPerLine' value={this.state.wordsPerLine} onChange={this.updateRule}/>
+          <InputField 
+            id={'wordsPerLine'}
+            type={'number'}
+            value={this.state.wordsPerLine}
+            handleChange={this.updateRule}
+          />
         </section>
         <section className='display'>
           { this.state.lines }
