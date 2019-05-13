@@ -11,8 +11,7 @@ class Document extends React.Component {
       text: '',
       lines: null,
       wordsPerLine: null,
-      lineLimit: null,
-      lineRules: null // [ {lineNumber: #, wordsPerLine: #} ]
+      isRandom: false
     };
 
     this.ingestText = this.ingestText.bind(this);
@@ -22,7 +21,6 @@ class Document extends React.Component {
 
   ingestText(event) {
     event.preventDefault();
-    console.log(':. Ingesting text.');
     const text = event.target.value;
     // TODO Filter out unsafe characters
     this.setState({text});
@@ -32,7 +30,6 @@ class Document extends React.Component {
     event.preventDefault();
     const ruleName = event.target.id;
     const ruleValue =  event.target.value;
-    console.log(':. updating rule', ruleName);
     const rule = {[ruleName]: ruleValue};
     this.setState(rule);
   }
@@ -43,33 +40,62 @@ class Document extends React.Component {
     return splitOnSpace.filter(word => word.length > 0);
   }
 
-  buildLines(words) {
-    const wordsPerLine = parseInt(this.state.wordsPerLine);
+  buildLines(words, wordsPerLine) {
     const lines = [];
-    const numberOfLines = Math.ceil(words.length / wordsPerLine);
-    console.log(`:. preparing ${numberOfLines} lines.`);
+    const totalWords = words.length;
+    
+    if (wordsPerLine > 0) {
+      for (let startIndex = 0; startIndex < totalWords;) {
+        const endIndex = startIndex + wordsPerLine;
+        const lineWords = words.slice(startIndex, endIndex);
+        lines.push(<Line words={lineWords} />);
 
-    for (let lineNumber = 0; lineNumber < numberOfLines; lineNumber++) {
-      console.log(`:. line ${lineNumber}`);
-      const sliceStartIndex = lineNumber === 0 ? 0 : lineNumber * wordsPerLine;
-      const sliceEndIndex = sliceStartIndex + wordsPerLine;
-
-      const lineWords = words.slice(sliceStartIndex, sliceEndIndex);
-      lines.push(<Line words={lineWords} key={lineNumber} />);
+        startIndex = endIndex;
+      }
+    } else {
+      this.buildRandomLines(words, 10);
     }
+    return lines;
+  }
+
+  buildRandomLines(words, wordsPerLine) {
+    const lines = [];
+    const totalWords = words.length;
+     
+    for (let startIndex = 0; startIndex < totalWords;) {
+      const randomArray = Math.ceil(Math.random() * 10000).toString().split('');
+      let currentLineLength = parseInt(randomArray.reduce((sum, nextNumber) => parseInt(sum + parseInt(nextNumber))));
+
+      while (currentLineLength >= wordsPerLine) {
+        currentLineLength = Math.ceil(currentLineLength / Math.ceil(Math.random() * 10));
+      }
+      
+      const endIndex = startIndex + currentLineLength;
+      const lineWords = words.slice(startIndex, endIndex);
+      lines.push(<Line words={lineWords} lineKey={`${startIndex}-${endIndex}`} />);
+
+      startIndex = endIndex;
+    }
+
     return lines;
   }
 
   lineateDocument(event) {
     event.preventDefault();
     const words = this.getWords(this.state.text);
-    const lines = this.buildLines(words);
+    const wordsPerLine = parseInt(!this.state.wordsPerLine ? Math.ceil(Math.random()*33) : this.state.wordsPerLine);
+
+    let lines;
+    if (this.state.isRandom) {
+      lines = this.buildRandomLines(words, wordsPerLine);
+    } else {
+      lines = this.buildLines(words, wordsPerLine);
+    }
 
     this.setState({lines});
   }
 
   render() {
-    console.log(':. rendering document with lines', this.state.lines);
     return(
       <div>
         <section className='inputs'>
@@ -80,6 +106,12 @@ class Document extends React.Component {
             type={'number'}
             value={this.state.wordsPerLine}
             handleChange={this.updateRule}
+          />
+          <InputField 
+            id={'isRandom'}
+            type={'checkbox'}
+            value={this.state.isRandom}
+            handleChange={() => this.setState({isRandom: !this.state.isRandom})}
           />
         </section>
         <section className='display'>
