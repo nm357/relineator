@@ -1,4 +1,4 @@
 .word {
-  display: inline;
+  display: inline-flex;
   margin: 0 1vw;
 }
